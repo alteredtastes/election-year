@@ -1,0 +1,103 @@
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+[ng-click],
+[data-ng-click],
+[x-ng-click] {
+    cursor: pointer;
+}
+
+nav {
+  margin-top: -70px;
+}
+
+body {
+    padding-top: 65px;
+}
+
+img {
+  margin-top: auto;
+  max-height: 100%;
+  max-width: 100%;
+  border: 1px solid black;
+}
+
+h4, h5 {
+  display: inline;
+}
+
+.brandName {
+  font-size: 40px;
+}
+
+.postBox {
+  min-height: 250px;
+}
+
+.postCity {
+  max-width: 200px;
+  float: left;
+}
+
+.postState {
+  max-width: 80px;
+  float: left;
+}
+
+.searchField {
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+.post {
+  border: 1px solid black;
+  float: left;
+  margin: 2px;
+  border-radius: 5px;
+}
+
+.postPic {
+  height: 200px;
+  float: left;
+}
+
+.title {
+  float: left;
+  padding: 10px;
+}
+
+.author {
+  float: right;
+  padding: 10px;
+}
+
+.voting {
+  font-size: 20px;
+}
+
+.dropClick {
+  float: left;
+  padding: 10px;
+}
+
+.commentForm, .dropdown {
+  float: left;
+  clear: both;
+}
+
+.comments {
+  margin: 5px auto 5px 0px;
+}
+
+.comment {
+
+}
+
+.commenter {
+  font-style: italic;
+}
+
+.commentBox {
+  min-height: 125px;
+}

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="./style.css" media="screen" title="no title" charset="utf-8">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <link rel="stylesheet" href="./bootstrapnew.css">
+    <title>Reddit Clone</title>
+  </head>
+
+  <body ng-controller="PostController" ng-cloak>
+
+    <nav class="navbar navbar-inverse" ng-model="view.postForm">
+      <a class="navbar-brand text-warning brandName" href="#">ELECTION YEAR</a>
+      <ul class="nav navbar-nav">
+        <li class="nav-item bg-success active">
+          <a class="nav-link" ng-click="view.postForm = !view.postForm">NEW CANDIDATE</a>
+        </li>
+        <li class="nav-item searchField active">
+          <input class="form-control" type="text" name="search" placeholder="search">
+        </li>
+      </ul>
+    </nav>
+
+    <div class="container">
+      <div class="row" ng-show="view.postForm">
+        <div class="col-xs-12 postForm">
+          <form name="postForm" ng-submit="submitPost(postForm.$valid); postForm.$setPristine()" novalidate>
+
+            <div class="form-group authorClass" ng-class="{'has-error':postForm.author.$invalid && postForm.author.$dirty, 'has-success': postForm.author.$valid && postForm.author.$dirty}">
+              <label for="authorID">Your name:</label>
+              <input class="form-control" type="text" name="author" placeholder="Donald Trump" ng-model="post.author" ng-required="required" id="authorID" ng-maxlength="25">
+              <p ng-show="(postForm.author.$error.required) || (postForm.author.$touched && postForm.author.$pristine)" class="help-block">Name is required!</p>
+              <p ng-show="postForm.author.$error.maxlength" class="help-block">Name too long!</p>
+            </div>
+
+            <div class="form-group titleClass" ng-class="{'has-error':postForm.title.$invalid && postForm.title.$dirty ,'has-success':postForm.title.$valid && postForm.title.$dirty}">
+              <label for="titleID">Post title:</label>
+              <input class="form-control" type="text" name="title" placeholder="I'm so much better than everyone." ng-model="post.title" ng-minlength="5" ng-maxlength="50" ng-required="required" id="titleID">
+              <p ng-show="postForm.title.$error.minlength" class="help-block">Your title is too short!</p>
+              <p ng-show="postForm.title.$error.maxlength" class="help-block">Your title is too long!</p>
+              <p ng-show="(postForm.title.$error.required) || (postForm.title.$touched && postForm.title.$pristine)" class="help-block">Title is required!</p>
+            </div>
+
+            <div class="form-group imageClass" ng-class="{'has-error':postForm.image.$invalid && postForm.image.$dirty ,'has-success':postForm.image.$valid && postForm.image.$dirty}">
+              <label for="imageID">Image URL</label>
+              <input class="form-control" type="url" name="image" placeholder="http://...." ng-model="post.image" ng-required="required" id="imageID">
+              <p ng-show="postForm.image.$error.url" class="help-block">That's not a URL!</p>
+              <p ng-show="(postForm.image.$error.required) || (postForm.image.$touched && postForm.image.$pristine)" class="help-block">Picture is required!</p>
+            </div>
+
+            <div class="form-group postClass" ng-class="{'has-error':postForm.description.$invalid && postForm.description.$dirty ,'has-success':postForm.description.$valid && postForm.description.$dirty}">
+              <label for="descriptionID">Post:</label>
+              <textarea class="form-control postBox" name="description" placeholder="Fuck yeah, I'll say ANYTHING!" ng-model="post.description" ng-required="required" id="descriptionID"></textarea>
+              <p ng-show="(postForm.description.$error.required) || (postForm.description.$touched && postForm.description.$pristine)" class="help-block">Gotta post before you submit!</p>
+              <input class="btn btn-default" type="submit" value="Submit Post" ng-disabled="postForm.$invalid">
+            </div>
+
+          </form>
+        </div>
+      </div>
+      <div class="row" ng-model="posts">
+        <div class="col-xs-12 post" ng-repeat="entry in posts | orderBy:'-rating'">
+          <div>
+            <div class="postPic col-xs-3">
+              <img src="{{entry.image}}" alt="{{entry.image}}"/>
+            </div>
+            <div class="postInfo col-xs-9">
+              <h4><span class="title bg-warning">{{entry.title}}</span></h4>
+              <h5><span class="author bg-success">By {{entry.author}}</span></h5><br><br>
+              <span ng-click="entry.rating = entry.rating + 1" class="voting glyphicon glyphicon-circle-arrow-up"></span>
+              <span ng-click="entry.rating = entry.rating - 1" class="voting glyphicon glyphicon-circle-arrow-down"></span>
+              <span class="voting" ng-class="{'text-success': entry.rating > 0, 'text-danger': entry.rating < 0}">{{entry.rating}}</span>
+              <p><br>
+                <span>{{entry.description}}</span>
+              </p>
+              <div class="col-xs-12 dropClick">
+                <span class="text-info postDate">{{entry.date | date:'shortDate'}}</span>
+                <a href="#" ng-click="entry.viewComments = !entry.viewComments"><span class="glyphicon glyphicon glyphicon-envelope"></span> Comments</a>
+                <a href="#" ng-click="entry.openCommentForm = !entry.openCommentForm">
+                <span class="glyphicon glyphicon glyphicon-bullhorn"></span> Add comment</a>
+                <div class="row">
+                  <div class="dropdown col-xs-6" ng-repeat="comment in entry.comments">
+                    <div ng-show="entry.viewComments">
+                      <div class="comments">
+                        <span class="comment">"{{comment.comment}}"</span>
+                        <span class="commenter">-{{comment.commenter}} ({{comment.date | date:'shortDate'}})</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row" ng-show="entry.openCommentForm">
+                <div class="col-xs-8 commentForm">
+                  <form name="commentForm" ng-submit="submitComment(commentForm.$valid, $index); commentForm.$setPristine()" novalidate>
+
+                    <div class="form-group commenterClass" ng-class="{'has-error':commentForm.commenter.$invalid && commentForm.commenter.$dirty ,'has-success':commentForm.commenter.$valid && commentForm.commenter.$dirty}">
+                      <label for="commenterID">Your name:</label>
+                      <input class="form-control" type="text" name="commenter" placeholder="Jon Stewart" ng-model="newComment.commenter" ng-required="required" ng-maxlength="20" id="commenterID">
+                      <p ng-show="(commentForm.commenter.$error.required) || (commentForm.commenter.$touched && commentForm.commenter.$pristine)" class="help-block">You can run but you cannot hide.</p>
+                      <p ng-show="commentForm.commenter.$error.maxlength" class="help-block">Name too long!</p>
+                    </div>
+
+                    <div class="form-group commentClass" ng-class="{'has-error':commentForm.comment.$invalid && commentForm.comment.$dirty ,'has-success':commentForm.comment.$valid && commentForm.comment.$dirty}">
+                      <label for="commentID">Comment:</label>
+                      <textarea class="form-control commentBox" name="comment" placeholder="Dear God, save us." ng-model="newComment.comment" ng-required="required" ng-maxlength="300" id="commentID"></textarea>
+                      <p ng-show="(commentForm.comment.$error.required) || (commentForm.comment.$touched && commentForm.comment.$pristine)" class="help-block">Speechless?</p>
+                      <p ng-show="commentForm.comment.$error.maxlength" class="help-block">Brevity please.</p>
+                      <input class="btn btn-default" type="submit" value="Comment" ng-disabled="commentForm.$invalid">
+                    </div>
+
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js">
+  </script>
+  <script type="text/javascript" src="./app.js">
+  </script>
+</html>
