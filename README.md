@@ -1,3 +1,3 @@
 # election-year
 
-lackadaisical-process.surge.sh/
+http://lackadaisical-process.surge.sh/
